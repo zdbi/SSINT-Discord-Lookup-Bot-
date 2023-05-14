@@ -14,7 +14,7 @@ import string
 import json
 import tls_client
 import time
-
+import aiohttp
 
 bot = commands.Bot(command_prefix=",", intents=discord.Intents.all())
 # bot invite - https://discord.com/api/oauth2/authorize?client_id=1105600239110475979&permissions=8&scope=bot
@@ -452,6 +452,23 @@ async def stfu(ctx):
     embed.set_author(name=bot.user.name, icon_url=bot.user.display_avatar.url)
     embed.add_field(name='stfu', value="> we muzzle the monkeys, not backwards", inline=False)
     await ctx.send(embed=embed)
+
+@bot.command(name='illicit_coordinates')
+@is_whitelisted()
+async def coordinates(ctx, lat: float, long: float):
+    async with aiohttp.ClientSession() as session:
+        url = f'https://search.illicit.services/spatial?latLong={lat},{long}'
+        async with session.get(url) as response:
+            if response.status == 200:
+                data = await response.text()
+
+                with open('coordinates_data.txt', 'w', encoding='utf-8') as file:
+                    file.write(data)
+
+                with open('coordinates_data.txt', 'rb') as file:
+                    await ctx.send(file=discord.File(file, 'coordinates_data.txt'))
+            else:
+                await ctx.send('Unable to fetch data from the website.')
 
 websocket()
 bot.run(TOKEN)
