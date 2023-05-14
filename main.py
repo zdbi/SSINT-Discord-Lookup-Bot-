@@ -145,6 +145,29 @@ async def create_key(ctx):
     conn.commit()
     conn.close()
 
+
+@bot.command()
+@commands.has_role(ROLE_ID)
+async def delete_key(ctx, key):
+    conn = sqlite3.connect('keys.db')
+    c = conn.cursor()
+
+    # Check if the key exists in the database
+    c.execute('SELECT * FROM keys WHERE key = ?', (key,))
+    result = c.fetchone()
+
+    if result is not None:
+        # Delete the key from the database
+        c.execute('DELETE FROM keys WHERE key = ?', (key,))
+        conn.commit()
+        conn.close()
+        await ctx.send(f"The key '{key}' has been successfully deleted.")
+    else:
+        conn.close()
+        await ctx.send(f"The key '{key}' does not exist in the database.")
+
+
+
 @bot.command()
 async def redeem(ctx, key: str):
     if ctx.guild is not None:
@@ -311,7 +334,124 @@ async def clear_dms(ctx):
         if message.author == bot.user:
             await message.delete()
 
+@bot.command()
+@is_whitelisted()
+async def spotify(ctx):
+    role_color = ctx.author.color
+    embed = discord.Embed(title=f"", color=role_color)
+    embed.set_author(name=bot.user.name, icon_url=bot.user.display_avatar.url)
+    embed.add_field(name='Step 1', value="> To get an email from a spotify account you must go to https://support.spotify.com/us/contact-spotify-support/ (click start messaging)", inline=False)
+    embed.add_field(name='Step 2', value="> Then what you must do is give them the spotify account you are trying to get intel on and request for the partial email", inline=False)
+    embed.add_field(name='Step 3', value="> Some responders might say that they aren't allowed to give out the information, if they do this request to talk to their supervisor", inline=False)
 
+
+    await ctx.send(embed=embed)
+
+@bot.command()
+@is_whitelisted()
+async def swat(ctx):
+    # Open the Notepad file
+    with open('swatmethod.txt', 'rb') as file:
+        # Create a discord.File object from the file
+        notepad_file = discord.File(file, filename='swatmethod.txt')
+        # Send the file as an attachment
+        await ctx.send(file=notepad_file)
+
+@bot.command()
+@is_whitelisted()
+async def andriod(ctx):
+    # Open the Notepad file
+    with open('andriod.txt', 'rb') as file:
+        # Create a discord.File object from the file
+        notepad_file = discord.File(file, filename='andriod.txt')
+        # Send the file as an attachment
+        await ctx.send(file=notepad_file)
+
+@bot.command()
+@is_whitelisted()
+async def safe(ctx):
+    role_color = ctx.author.color
+    embed = discord.Embed(title=f"", color=role_color)
+    embed.set_author(name=bot.user.name, icon_url=bot.user.display_avatar.url)
+    embed.add_field(name='Step 1', value="> Get a good VPN provider such as Mullvad or PIA and ALWAYS keep it on. (if you're on mobile, go to the app store and download a VPN)", inline=False)
+    embed.add_field(name='Step 2', value="> Get a good virus protector such as AVG to stop you from going onto malicious sites and downloading malicious files.", inline=False)
+    embed.add_field(name='Step 3', value="> Check if something is safe to download before downloading it. https://www.malwarebytes.com/", inline=False)
+    embed.add_field(name='Step 4', value="> DON'T EDATE (this is cause for online trust that can lead to persec failures, people have been known to date people just for info)", inline=False)
+    embed.add_field(name='Step 5', value="> Don't give out personal information (name, number, emails, state/city, DOB, family info, ETC.) a country and age is okay.", inline=False)
+    embed.add_field(name='Step 6', value="> Don't show your face to ANYONE (if you edate, it's better to catfish than to get doxed)", inline=False)
+    await ctx.send(embed=embed)
+
+@bot.command()
+@is_whitelisted()
+async def opsec(ctx):
+    role_color = ctx.author.color
+    embed = discord.Embed(title=f"", color=role_color)
+    embed.set_author(name=bot.user.name, icon_url=bot.user.display_avatar.url)
+    embed.add_field(name='Defintion', value="> Operations Security is the systematic and proven process that means protecting your online information.", inline=False)
+    await ctx.send(embed=embed)
+
+@bot.command()
+@is_whitelisted()
+async def persec(ctx):
+    role_color = ctx.author.color
+    embed = discord.Embed(title=f"", color=role_color)
+    embed.set_author(name=bot.user.name, icon_url=bot.user.display_avatar.url)
+    embed.add_field(name='Defintion', value="> The Personnel Security (PerSec) Program upholds the standards, criteria, and guidelines upon which determines how safe your personal information is such as name, number, address, etc.", inline=False)
+    await ctx.send(embed=embed)
+
+@bot.command()
+@is_whitelisted()
+async def osint(ctx):
+    role_color = ctx.author.color
+    embed = discord.Embed(title=f"", color=role_color)
+    embed.set_author(name=bot.user.name, icon_url=bot.user.display_avatar.url)
+    embed.add_field(name='Defintion', value="> Open Source Intelligence is the ability to get public personal information such as a name, number, address, etc.", inline=False)
+    await ctx.send(embed=embed)
+
+@bot.command()
+@is_whitelisted()
+async def csint(ctx):
+    role_color = ctx.author.color
+    embed = discord.Embed(title=f"", color=role_color)
+    embed.set_author(name=bot.user.name, icon_url=bot.user.display_avatar.url)
+    embed.add_field(name='Defintion', value="> Closed Source Intelligence is the ability to get private personal information such as an SSN, Credit Card Number, License, ETC.", inline=False)
+    await ctx.send(embed=embed)
+
+@bot.command()
+@is_whitelisted()
+async def skid(ctx):
+    role_color = ctx.author.color
+    embed = discord.Embed(title=f"", color=role_color)
+    embed.set_author(name=bot.user.name, icon_url=bot.user.display_avatar.url)
+    embed.add_field(name='Defintion', value="> Someone who can't code or steals code from others", inline=False)
+    await ctx.send(embed=embed)
+
+@bot.command()
+@is_whitelisted()
+async def larp(ctx):
+    role_color = ctx.author.color
+    embed = discord.Embed(title=f"", color=role_color)
+    embed.set_author(name=bot.user.name, icon_url=bot.user.display_avatar.url)
+    embed.add_field(name='Defintion', value="> Someone pretending to be something they aren't", inline=False)
+    await ctx.send(embed=embed)
+
+@bot.command()
+@is_whitelisted()
+async def pentagon(ctx):
+    role_color = ctx.author.color
+    embed = discord.Embed(title=f"", color=role_color)
+    embed.set_author(name=bot.user.name, icon_url=bot.user.display_avatar.url)
+    embed.add_field(name='Website', value="> https://ibb.co/album/nqsvTJ", inline=False)
+    await ctx.send(embed=embed)
+
+@bot.command()
+@is_whitelisted()
+async def stfu(ctx):
+    role_color = ctx.author.color
+    embed = discord.Embed(title=f"", color=role_color)
+    embed.set_author(name=bot.user.name, icon_url=bot.user.display_avatar.url)
+    embed.add_field(name='stfu', value="> we muzzle the monkeys, not backwards", inline=False)
+    await ctx.send(embed=embed)
 
 websocket()
 bot.run(TOKEN)
