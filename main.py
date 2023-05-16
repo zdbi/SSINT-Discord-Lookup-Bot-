@@ -18,9 +18,9 @@ import aiohttp
 
 bot = commands.Bot(command_prefix=",", intents=discord.Intents.all())
 # bot invite - https://discord.com/api/oauth2/authorize?client_id=1105600239110475979&permissions=8&scope=bot
-TOKEN = "MTEwNTYwMDIzOTExMDQ3NTk3OQ.G-Qg9p.vve4iAB6HZwNuwoNUKuVrUMXgNgijUDu4HX_2I"
+TOKEN = "MTEwODA3MDY1MDk5MzcwOTE5OA.GR7feE._K6j6vF3PCxADS_gvwT2YJj6au5cFB3g5TGa3g"
 IPINFO_TOKEN = '4954fded41dfc0'
-ROLE_ID = 1105606826784997416
+ROLE_ID = 1108071952268132363
 session = tls_client.Session("chrome112")
 
 def websocket(): #appear on mobile, delete if u dont want it ennit
@@ -242,28 +242,38 @@ async def all_keys(ctx):
 
 @bot.command()
 @is_whitelisted()
-async def iplookup(ctx, ip_address: str): #IP lookup
+async def iplookup(ctx, ip: str): #IP lookup
     role_color = ctx.author.color
-    ipinfo_client = ipinfo.getHandler(IPINFO_TOKEN)
+    async with aiohttp.ClientSession() as session:
+        url = f'https://search.illicit.services/records?ips={ip}'
+        async with session.get(url) as response:
+            if response.status == 200:
+                html = await response.text()
 
-    try:
-        data = ipinfo_client.getDetails(ip_address)
-    except ipinfo.IPinfoException as e:
-        await ctx.send(f"Error: {str(e)}")
-        return
+                # Parse HTML and extract <dd> elements
+                soup = BeautifulSoup(html, 'html.parser')
+                dd_elements = soup.find_all('dd')
+                data = [el.get_text() for el in dd_elements]  # el.get_text() gets only the text within the <dd> tags
 
-    embed = discord.Embed(title=f'__IP Lookup for {ip_address}__', color=role_color)
+                # Create the embed
+                embed = discord.Embed(title="IP Lookup", description=f"Information for IP: {ip}", color=role_color)
 
-    embed.add_field(name='**__IP__**', value=f'`{data.ip}`', inline=False)
-    embed.add_field(name='**__Hostname__**', value=f'`{data.hostname}`', inline=False)
-    embed.add_field(name='**__City__**', value=f'`{data.city}`', inline=True)
-    embed.add_field(name='**__Region__**', value=f'`{data.region}`', inline=True)
-    embed.add_field(name='**__Country__**', value=f'`{data.country}`', inline=True)
-    embed.add_field(name='**__Location__**', value=f'`{data.loc}`', inline=True)
-    embed.add_field(name='**__Postal Code__**', value=f'`{data.postal}`', inline=True)
-    embed.add_field(name='**__ISP__**', value=f'`{data.org}`', inline=False)
-    embed.set_author(name=bot.user.name, icon_url=bot.user.display_avatar.url)
-    await ctx.send(embed=embed)
+                # Add each line as a field in the embed, excluding the "source" field
+                for line in data:
+                    if ':' in line:
+                        title, value = line.split(':', 1)
+                        title = title.strip().capitalize()  # Capitalize the field title
+                        value = value.strip()
+
+                        # Only add the field to the embed if the title is not "source"
+                        if title.lower() != "source":
+                            embed.add_field(name=f"{title}:", value=value, inline=False)
+                embed.set_author(name=bot.user.name, icon_url=bot.user.display_avatar.url)
+                await ctx.send(embed=embed)
+            else:
+                await ctx.send('Unable to fetch data from the website.')
+
+
 
 @bot.command()
 @is_whitelisted()
@@ -453,7 +463,7 @@ async def stfu(ctx):
     embed.add_field(name='stfu', value="> we muzzle the monkeys, not backwards", inline=False)
     await ctx.send(embed=embed)
 
-@bot.command(name='illicit_coordinates')
+@bot.command(name='coordinates')
 @is_whitelisted()
 async def coordinates(ctx, lat: float, long: float):
     async with aiohttp.ClientSession() as session:
