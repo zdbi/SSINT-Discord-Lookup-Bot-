@@ -17,10 +17,10 @@ import time
 import aiohttp
 
 bot = commands.Bot(command_prefix=",", intents=discord.Intents.all())
-# bot invite - https://discord.com/api/oauth2/authorize?client_id=1105600239110475979&permissions=8&scope=bot
-TOKEN = "MTEwODA3MDY1MDk5MzcwOTE5OA.GR7feE._K6j6vF3PCxADS_gvwT2YJj6au5cFB3g5TGa3g"
-IPINFO_TOKEN = '4954fded41dfc0'
-ROLE_ID = 1108071952268132363
+# bot invite - 
+TOKEN = "token"
+IPINFO_TOKEN = 'key'
+ROLE_ID = 1234567890
 session = tls_client.Session("chrome112")
 
 def websocket(): #appear on mobile, delete if u dont want it ennit
