@@ -90,7 +90,7 @@ def get_badges(user):
 @bot.event
 async def on_ready():
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="SSINT"))
-    print(f'Ready to rape some niggas')
+    print(f'Ready')
     conn = sqlite3.connect('keys.db')
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS keys (
@@ -249,23 +249,21 @@ async def iplookup(ctx, ip: str): #IP lookup
         async with session.get(url) as response:
             if response.status == 200:
                 html = await response.text()
-
-                # Parse HTML and extract <dd> elements
+s
                 soup = BeautifulSoup(html, 'html.parser')
                 dd_elements = soup.find_all('dd')
-                data = [el.get_text() for el in dd_elements]  # el.get_text() gets only the text within the <dd> tags
+                data = [el.get_text() for el in dd_elements]
 
-                # Create the embed
+
                 embed = discord.Embed(title="IP Lookup", description=f"Information for IP: {ip}", color=role_color)
 
-                # Add each line as a field in the embed, excluding the "source" field
+
                 for line in data:
                     if ':' in line:
                         title, value = line.split(':', 1)
-                        title = title.strip().capitalize()  # Capitalize the field title
+                        title = title.strip().capitalize()
                         value = value.strip()
 
-                        # Only add the field to the embed if the title is not "source"
                         if title.lower() != "source":
                             embed.add_field(name=f"{title}:", value=value, inline=False)
                 embed.set_author(name=bot.user.name, icon_url=bot.user.display_avatar.url)
@@ -360,21 +358,17 @@ async def spotify(ctx):
 @bot.command()
 @is_whitelisted()
 async def swat(ctx):
-    # Open the Notepad file
     with open('swatmethod.txt', 'rb') as file:
-        # Create a discord.File object from the file
+
         notepad_file = discord.File(file, filename='swatmethod.txt')
-        # Send the file as an attachment
         await ctx.send(file=notepad_file)
 
 @bot.command()
 @is_whitelisted()
 async def andriod(ctx):
-    # Open the Notepad file
+
     with open('andriod.txt', 'rb') as file:
-        # Create a discord.File object from the file
         notepad_file = discord.File(file, filename='andriod.txt')
-        # Send the file as an attachment
         await ctx.send(file=notepad_file)
 
 @bot.command()
@@ -425,42 +419,6 @@ async def csint(ctx):
     embed = discord.Embed(title=f"", color=role_color)
     embed.set_author(name=bot.user.name, icon_url=bot.user.display_avatar.url)
     embed.add_field(name='Defintion', value="> Closed Source Intelligence is the ability to get private personal information such as an SSN, Credit Card Number, License, ETC.", inline=False)
-    await ctx.send(embed=embed)
-
-@bot.command()
-@is_whitelisted()
-async def skid(ctx):
-    role_color = ctx.author.color
-    embed = discord.Embed(title=f"", color=role_color)
-    embed.set_author(name=bot.user.name, icon_url=bot.user.display_avatar.url)
-    embed.add_field(name='Defintion', value="> Someone who can't code or steals code from others", inline=False)
-    await ctx.send(embed=embed)
-
-@bot.command()
-@is_whitelisted()
-async def larp(ctx):
-    role_color = ctx.author.color
-    embed = discord.Embed(title=f"", color=role_color)
-    embed.set_author(name=bot.user.name, icon_url=bot.user.display_avatar.url)
-    embed.add_field(name='Defintion', value="> Someone pretending to be something they aren't", inline=False)
-    await ctx.send(embed=embed)
-
-@bot.command()
-@is_whitelisted()
-async def pentagon(ctx):
-    role_color = ctx.author.color
-    embed = discord.Embed(title=f"", color=role_color)
-    embed.set_author(name=bot.user.name, icon_url=bot.user.display_avatar.url)
-    embed.add_field(name='Website', value="> https://ibb.co/album/nqsvTJ", inline=False)
-    await ctx.send(embed=embed)
-
-@bot.command()
-@is_whitelisted()
-async def stfu(ctx):
-    role_color = ctx.author.color
-    embed = discord.Embed(title=f"", color=role_color)
-    embed.set_author(name=bot.user.name, icon_url=bot.user.display_avatar.url)
-    embed.add_field(name='stfu', value="> we muzzle the monkeys, not backwards", inline=False)
     await ctx.send(embed=embed)
 
 @bot.command(name='coordinates')
